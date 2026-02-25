@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm ls storybook --depth=1)",
+      "Bash(pnpm build-storybook)",
+      "Bash(pnpm add -D @storybook/addon-a11y)"
+    ],
+    "additionalDirectories": [
+      "/Users/danstuart/Downloads/chatwidget-preact"
+    ]
+  }
+}

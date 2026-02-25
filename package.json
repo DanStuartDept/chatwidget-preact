@@ -24,7 +24,9 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "preact": "^10.25.4"
@@ -32,11 +34,17 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@preact/preset-vite": "^2.10.3",
+    "@storybook/addon-a11y": "^10.2.12",
+    "@storybook/addon-docs": "^10.2.12",
+    "@storybook/addon-mcp": "^0.3.2",
+    "@storybook/preact-vite": "^10.2.12",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/preact": "^3.2.4",
     "@vitest/coverage-v8": "4.0.18",
     "eslint": "^10.0.2",
     "jsdom": "^28.1.0",
+    "remark-gfm": "^4.0.1",
+    "storybook": "^10.2.12",
     "terser": "^5.46.0",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.56.1",

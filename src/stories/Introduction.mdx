@@ -1,0 +1,42 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Introduction" />
+
+# Chat Widget
+
+An embeddable chat widget built with Preact that renders inside **Shadow DOM** for full CSS isolation from the host page. It builds to a single IIFE JS file (~10KB gzipped).
+
+## Component tree
+
+```
+Widget (open/close state)
+├── ChatPanel (chat window — positioned left/right per config)
+│   ├── ChatHeader (title + pulse indicator)
+│   ├── MockBanner (shown when mock mode active)
+│   ├── MessageList (scrollable, auto-scrolls to bottom)
+│   │   ├── MessageBubble[] (user/assistant variants)
+│   │   └── TypingIndicator (bouncing dots while loading)
+│   └── ChatInput (auto-resizing textarea, Enter to send)
+└── ChatBubble (floating action button, toggles panel)
+```
+
+## Configuration
+
+The widget is configured via `window.ChatWidgetConfig` with the following options:
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `endpoint` | `string` | — | API endpoint for chat messages |
+| `primaryColor` | `string` | `#0b6e4f` | Theme colour |
+| `title` | `string` | `"Chat with us"` | Header title |
+| `greeting` | `string` | `"Hi there! How can I help?"` | Initial assistant message |
+| `position` | `"left" \| "right"` | `"right"` | Screen position |
+| `bubbleSize` | `number` | `60` | Floating button size in px |
+| `zIndex` | `number` | `9999` | CSS z-index |
+| `placeholder` | `string` | `"Type a message…"` | Input placeholder text |
+| `mockMode` | `boolean \| "auto"` | `"auto"` | Use mock responses when `true` or when no endpoint is set |
+
+## Modes
+
+- **Real mode** — POSTs `{ messages }` to the configured endpoint and expects `{ reply }`.
+- **Mock mode** — Returns canned responses with a simulated delay. Activated when `mockMode: true` or `mockMode: "auto"` with no endpoint.

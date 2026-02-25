@@ -26,19 +26,19 @@ const styles: Record<string, CSSProperties> = {
 
 /** Scrollable container that renders message bubbles and auto-scrolls to the latest entry. */
 export function MessageList({ messages, isLoading }: MessageListProps) {
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = containerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages.length, isLoading]);
 
   return (
-    <div style={styles.container}>
+    <div ref={containerRef} style={styles.container}>
       {messages.map((msg) => (
         <MessageBubble key={msg.id} message={msg} />
       ))}
       {isLoading && <TypingIndicator />}
-      <div ref={bottomRef} />
     </div>
   );
 }
