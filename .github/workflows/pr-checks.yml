@@ -1,0 +1,76 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: pr-checks-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  checks:
+    name: Lint, Typecheck, Test & Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/setup-env
+      - run: mkdir -p reports
+
+      - name: Lint
+        id: lint
+        continue-on-error: true
+        run: pnpm lint 2>&1 | tee reports/lint.txt
+
+      - name: Typecheck
+        id: typecheck
+        continue-on-error: true
+        run: pnpm typecheck 2>&1 | tee reports/typecheck.txt
+
+      - name: Tests with coverage
+        id: test
+        continue-on-error: true
+        run: |
+          pnpm test:coverage -- \
+            --reporter=verbose \
+            --reporter=github-actions \
+            --coverage.reporter=text \
+            --coverage.reporter=json-summary \
+            2>&1 | tee reports/test.txt
+
+      - name: Build
+        id: build
+        continue-on-error: true
+        run: pnpm build 2>&1 | tee reports/build.txt
+
+      - name: Compose PR report
+        if: always()
+        uses: ./.github/actions/compose-pr-report
+        with:
+          lint-result: ${{ steps.lint.outcome }}
+          typecheck-result: ${{ steps.typecheck.outcome }}
+          test-result: ${{ steps.test.outcome }}
+          build-result: ${{ steps.build.outcome }}
+
+      - name: Post PR comment
+        if: always() && github.event_name == 'pull_request'
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          header: pr-checks
+          path: report.md
+
+      - name: Check results
+        if: always()
+        run: |
+          if [[ "${{ steps.lint.outcome }}" != "success" || \
+                "${{ steps.typecheck.outcome }}" != "success" || \
+                "${{ steps.test.outcome }}" != "success" || \
+                "${{ steps.build.outcome }}" != "success" ]]; then
+            echo "::error::One or more checks failed"
+            exit 1
+          fi

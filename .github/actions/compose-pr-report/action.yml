@@ -1,0 +1,110 @@
+name: Compose PR Report
+description: Generate a markdown report from check results, coverage, and bundle size
+
+inputs:
+  lint-result:
+    description: Outcome of the lint step
+    required: true
+  typecheck-result:
+    description: Outcome of the typecheck step
+    required: true
+  test-result:
+    description: Outcome of the test step
+    required: true
+  build-result:
+    description: Outcome of the build step
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Generate report
+      shell: bash
+      env:
+        LINT_RESULT: ${{ inputs.lint-result }}
+        TYPECHECK_RESULT: ${{ inputs.typecheck-result }}
+        TEST_RESULT: ${{ inputs.test-result }}
+        BUILD_RESULT: ${{ inputs.build-result }}
+      run: |
+        icon() { [ "$1" = "success" ] && echo "✅" || echo "❌"; }
+        label() { [ "$1" = "success" ] && echo "Passed" || echo "Failed"; }
+
+        {
+          echo "## PR Check Results"
+          echo ""
+          echo "| Check | Status |"
+          echo "|-------|--------|"
+          echo "| **Lint** | $(icon "$LINT_RESULT") $(label "$LINT_RESULT") |"
+          echo "| **Typecheck** | $(icon "$TYPECHECK_RESULT") $(label "$TYPECHECK_RESULT") |"
+          echo "| **Tests** | $(icon "$TEST_RESULT") $(label "$TEST_RESULT") |"
+          echo "| **Build** | $(icon "$BUILD_RESULT") $(label "$BUILD_RESULT") |"
+          echo ""
+
+          # ── Coverage table ──
+          if [ -f coverage/coverage-summary.json ]; then
+            STMTS=$(jq '.total.statements.pct' coverage/coverage-summary.json)
+            BRANCH=$(jq '.total.branches.pct' coverage/coverage-summary.json)
+            FUNCS=$(jq '.total.functions.pct' coverage/coverage-summary.json)
+            LINES=$(jq '.total.lines.pct' coverage/coverage-summary.json)
+            echo "### Coverage"
+            echo ""
+            echo "| Statements | Branches | Functions | Lines |"
+            echo "|:----------:|:--------:|:---------:|:-----:|"
+            echo "| ${STMTS}% | ${BRANCH}% | ${FUNCS}% | ${LINES}% |"
+            echo ""
+          fi
+
+          # ── Bundle size ──
+          if [ -f dist/chatwidget.js ]; then
+            RAW=$(wc -c < dist/chatwidget.js | tr -d ' ')
+            GZIP=$(gzip -c dist/chatwidget.js | wc -c | tr -d ' ')
+            RAW_KB=$(echo "scale=1; $RAW / 1024" | bc)
+            GZIP_KB=$(echo "scale=1; $GZIP / 1024" | bc)
+            echo "### Bundle Size"
+            echo ""
+            echo "| Raw | Gzipped |"
+            echo "|:---:|:-------:|"
+            echo "| ${RAW_KB} KB | ${GZIP_KB} KB |"
+            echo ""
+          fi
+
+          # ── Detailed reports ──
+          echo "### Reports"
+          echo ""
+
+          echo "<details>"
+          echo "<summary>$(icon "$LINT_RESULT") Lint</summary>"
+          echo ""
+          echo '```'
+          tail -50 reports/lint.txt 2>/dev/null || echo "No output"
+          echo '```'
+          echo "</details>"
+          echo ""
+
+          echo "<details>"
+          echo "<summary>$(icon "$TYPECHECK_RESULT") Typecheck</summary>"
+          echo ""
+          echo '```'
+          tail -50 reports/typecheck.txt 2>/dev/null || echo "No output"
+          echo '```'
+          echo "</details>"
+          echo ""
+
+          echo "<details>"
+          echo "<summary>$(icon "$TEST_RESULT") Tests</summary>"
+          echo ""
+          echo '```'
+          tail -100 reports/test.txt 2>/dev/null || echo "No output"
+          echo '```'
+          echo "</details>"
+          echo ""
+
+          echo "<details>"
+          echo "<summary>$(icon "$BUILD_RESULT") Build</summary>"
+          echo ""
+          echo '```'
+          tail -30 reports/build.txt 2>/dev/null || echo "No output"
+          echo '```'
+          echo "</details>"
+
+        } > report.md
