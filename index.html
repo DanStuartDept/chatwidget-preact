@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ChatWidget Dev</title>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body { font-family: system-ui, sans-serif; background: #f4f5f7; color: #1a1a2e; }
+      .page { max-width: 640px; margin: 0 auto; padding: 80px 24px; }
+      .page h1 { font-size: 1.8rem; margin-bottom: 8px; }
+      .page p { color: #555; line-height: 1.7; margin-bottom: 12px; }
+      code { background: #e8e8ee; padding: 2px 6px; border-radius: 4px; font-size: 0.88em; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <h1>ChatWidget Dev Page</h1>
+      <p>The chat bubble should appear in the bottom-right corner. Click it to open the panel.</p>
+      <p>This is running in dev mode with Vite HMR. Edit any component and it'll hot-reload.</p>
+      <p>Set <code>window.ChatWidgetConfig.endpoint</code> to point at your backend.</p>
+    </div>
+
+    <script>
+      // Configure before the widget loads
+      window.ChatWidgetConfig = {
+        endpoint: "",  // Leave empty for mock mode in dev
+        primaryColor: "#0b6e4f",
+        title: "Chat with us",
+        greeting: "Hi there! How can I help you today?",
+        position: "right",
+      };
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

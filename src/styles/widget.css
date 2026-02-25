@@ -1,0 +1,61 @@
+/* 
+ * Widget styles — these are injected into the Shadow DOM
+ * so they're fully isolated from the host page.
+ *
+ * CSS custom properties are set dynamically via the Theme component.
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap");
+
+:host {
+  all: initial;
+  font-family: "DM Sans", -apple-system, BlinkMacSystemFont, sans-serif;
+  --cw-primary: #0b6e4f;
+  --cw-primary-hover: #095e43;
+  --cw-bg: #ffffff;
+  --cw-bg-muted: #f0f2f5;
+  --cw-text: #1a1a2e;
+  --cw-text-muted: #71717a;
+  --cw-border: #e4e4e7;
+  --cw-radius: 14px;
+  --cw-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+  --cw-z: 2147483647;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Animations ── */
+
+@keyframes cw-fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes cw-pulse {
+  0%,
+  100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes cw-bounce {
+  to {
+    transform: translateY(-4px);
+    opacity: 0.5;
+  }
+}

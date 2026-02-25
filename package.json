@@ -1,0 +1,46 @@
+{
+  "name": "chatwidget-preact",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Embeddable chat widget built with Preact, rendered inside Shadow DOM for full CSS isolation",
+  "author": "DanStuartDept",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanStuartDept/chatwidget-preact.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DanStuartDept/chatwidget-preact/issues"
+  },
+  "homepage": "https://github.com/DanStuartDept/chatwidget-preact#readme",
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "preinstall": "npx only-allow pnpm",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "lint": "eslint src/",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "preact": "^10.25.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@preact/preset-vite": "^2.10.3",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/preact": "^3.2.4",
+    "@vitest/coverage-v8": "4.0.18",
+    "eslint": "^10.0.2",
+    "jsdom": "^28.1.0",
+    "terser": "^5.46.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.56.1",
+    "vite": "^7.3.1",
+    "vitest": "^4.0.18"
+  }
+}

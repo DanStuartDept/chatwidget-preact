@@ -1,0 +1,1 @@
+export { getMockResponse } from "./mockResponses";
